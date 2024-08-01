@@ -5,6 +5,8 @@ import com.felipe.atividadeCrud.Cliente.dto.ClientDto;
 import com.felipe.atividadeCrud.Cliente.exceptions.ResourceNotFoundException;
 import com.felipe.atividadeCrud.Cliente.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +22,27 @@ public class ClientService {
         Client client = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Recurso não encontrado"));
         return new ClientDto(client);
     }
+    @Transactional(readOnly = true)
+    public Page<ClientDto> findAll(Pageable pageable){
+        Page<Client> result = repository.findAll(pageable);
+        return result.map(x -> new ClientDto(x));
+    }
 
+
+    public ClientDto insert (ClientDto dto){
+        Client entity = new Client();
+        convertDtoEntity(dto,entity);
+        entity = repository.save(entity);
+        return new ClientDto(entity);
+    }
+
+    private void convertDtoEntity(ClientDto dto, Client entity) {
+        entity.setName(dto.getName());
+        entity.setCpf(dto.getCpf());
+        entity.setIncome(dto.getIncome());
+        entity.setBirthDate(dto.getBirthDate());
+        entity.setChildren(dto.getChildren());
+    }
 
 
 }

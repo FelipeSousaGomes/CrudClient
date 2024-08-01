@@ -14,6 +14,10 @@ public class ClientDto {
     private LocalDate birthDate;
     private Integer children;
 
+    public ClientDto(){
+
+    }
+
     public ClientDto(Client client) {
         id = client.getId();
         name = client.getName();
