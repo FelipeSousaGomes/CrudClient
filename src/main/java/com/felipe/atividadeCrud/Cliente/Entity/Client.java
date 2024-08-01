@@ -16,7 +16,7 @@ public class Client {
     private String name;
     private String cpf;
     private Double income;
-    @PastOrPresent
+
     private LocalDate birthDate;
     private Integer children;
 

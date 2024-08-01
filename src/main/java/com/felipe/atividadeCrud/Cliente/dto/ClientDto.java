@@ -1,6 +1,8 @@
 package com.felipe.atividadeCrud.Cliente.dto;
 
 import com.felipe.atividadeCrud.Cliente.Entity.Client;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -8,9 +10,11 @@ import java.time.LocalDate;
 public class ClientDto {
 
     private Long id;
+    @NotBlank(message = "Campo requerido")
     private String name;
     private String cpf;
     private Double income;
+    @PastOrPresent(message = "Data de nascimento: não pode ser data futura")
     private LocalDate birthDate;
     private Integer children;
 
