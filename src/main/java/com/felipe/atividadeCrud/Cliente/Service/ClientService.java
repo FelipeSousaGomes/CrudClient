@@ -2,13 +2,16 @@ package com.felipe.atividadeCrud.Cliente.Service;
 
 import com.felipe.atividadeCrud.Cliente.Entity.Client;
 import com.felipe.atividadeCrud.Cliente.dto.ClientDto;
+import com.felipe.atividadeCrud.Cliente.exceptions.DatabaseException;
 import com.felipe.atividadeCrud.Cliente.exceptions.ResourceNotFoundException;
 import com.felipe.atividadeCrud.Cliente.repository.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -49,7 +52,18 @@ public class ClientService {
         }
     }
 
-
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void Delete(Long id){
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+        try {
+            repository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
+    }
     private void convertDtoEntity(ClientDto dto, Client entity) {
         entity.setName(dto.getName());
         entity.setCpf(dto.getCpf());
@@ -57,6 +71,8 @@ public class ClientService {
         entity.setBirthDate(dto.getBirthDate());
         entity.setChildren(dto.getChildren());
     }
+
+
 
 
 }
